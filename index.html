@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dune 2 Lite</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="hud">
+    <div><b>Spice:</b> <span id="spice">0</span></div>
+    <div><b>Carried:</b> <span id="carried">0</span></div>
+    <div><b>Barracks:</b> <span id="bcount">0</span></div>
+    <div><b>Troops:</b> <span id="ucount">0</span></div>
+  </div>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="log"></div>
+
+  <script src="js/entities.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/engine.js"></script>
+
+  <!-- Load Level 1 or Level 2 by commenting/uncommenting -->
+  <script src="js/level1.js"></script>
+  <!-- <script src="js/level2.js"></script> -->
+</body>
+</html>
+

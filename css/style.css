@@ -1,0 +1,39 @@
+body {
+  background: #111;
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  user-select: none;
+}
+
+#hud {
+  background: #222;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-around;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+canvas {
+  display: block;
+  margin: 12px auto;
+  background: #c2b280; /* sandy ground */
+  box-shadow: 0 0 8px #0008 inset;
+  cursor: crosshair;
+  border: 2px solid #555;
+}
+
+#log {
+  background: #222;
+  color: #afa;
+  height: 100px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 6px 12px;
+  margin: 0 12px 12px;
+  border-radius: 4px;
+  border: 1px solid #444;
+}
+
