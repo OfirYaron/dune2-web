@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dune 2 Lite - Test Runner</title>
+  <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+</head>
+<body>
+  <div id="mocha"></div>
+  <script src="https://unpkg.com/mocha/mocha.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chai@4.3.7/chai.js"></script>
+  <script>
+    window.chai = chai; // Ensure chai is globally available
+    mocha.setup('bdd');
+  </script>
+  <!-- Add all test files below -->
+  <script src="sample.test.js"></script>
+  <script src="engine.test.js"></script>
+  <script src="entities.test.js"></script>
+  <script src="gameState.test.js"></script>
+  <script src="ui.test.js"></script>
+  <!-- Add more test files as needed -->
+  <script>
+    mocha.run();
+  </script>
+</body>
+</html>

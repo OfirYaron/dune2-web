@@ -104,4 +104,13 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 
 ---
 
+## Future: Automated Test Coverage Reporting
+
+- Integrate a coverage tool (e.g., Istanbul/nyc) for JavaScript.
+- Generate coverage reports for all unit and integration tests.
+- Display coverage status in README and CI.
+- Ensure coverage thresholds for PRs and main branch.
+
+---
+
 This roadmap is designed for incremental progress, ensuring stability and quality at every step. Each phase builds on the previous, with a strong foundation in testing and automation before expanding features and content. All development will remain pure vanilla JavaScript, fully client-side, and suitable for static hosting with no backend dependencies.

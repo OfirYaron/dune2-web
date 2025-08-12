@@ -1,0 +1,33 @@
+name: Run JS Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: npm install -g playwright
+      - name: Run tests in headless browser
+        run: |
+          npx playwright install chromium
+          npx playwright test --project=chromium
+        env:
+          CI: true
+      - name: Serve and test (static)
+        run: |
+          npx http-server . &
+          sleep 2
+          npx playwright open http://localhost:8080/tests/index.html
+        env:
+          CI: true

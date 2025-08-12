@@ -72,3 +72,42 @@ is4-refactor-modular-es6
 ```
 
 This helps keep roadmap, issues, and branches in sync and easy to track.
+
+## Testing
+
+This project uses **Mocha** and **Chai** (via CDN) for unit and integration testing, with all tests written in vanilla JavaScript. Tests cover core game logic, UI updates, and edge cases.
+
+### Test Directory Structure
+- `tests/` — Contains all test files (e.g., `engine.test.js`, `entities.test.js`, `ui.test.js`).
+
+### How to Run Tests Locally
+1. Open `index.html` in your browser.
+2. The test runner will be available at `/tests/` (see below for setup).
+3. All tests are run automatically and results are displayed in the browser.
+
+### Adding/Editing Tests
+- Create new test files in the `tests/` directory.
+- Use Mocha's `describe` and `it` blocks for organizing tests.
+- Use Chai's `assert`/`expect` for assertions.
+- Cover all game mechanics, UI logic, and edge cases.
+
+### Example Test
+```js
+// tests/sample.test.js
+
+describe('Sample Test', function() {
+  it('should pass this basic test', function() {
+    chai.assert.equal(2 + 2, 4);
+  });
+});
+```
+
+### Continuous Integration (CI)
+- All tests are run automatically on every push and pull request using GitHub Actions.
+- CI uses a headless browser to run tests and will fail builds on test errors.
+
+### Contribution Guidelines for Tests
+- Write clear, isolated tests for each function or feature.
+- Add integration tests for interactions between modules.
+- Document any new test files and their purpose in the README.
+- Ensure tests pass locally before pushing changes.
