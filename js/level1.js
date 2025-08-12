@@ -1,3 +1,6 @@
+import { game, createBuilding, createUnit } from './gameState.js';
+import { logMessage } from './ui.js';
+
 // Level 1: basic harvesting and building training
 
 function loadLevel1() {

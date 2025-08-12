@@ -1,133 +1,12 @@
+import { game, GRID_SIZE, dist, createUnit, createBuilding } from './gameState.js';
+import { setupInput } from './input.js';
+import { UnitTypes, BuildingTypes } from './entities.js';
+import { updateHUD, logMessage } from './ui.js';
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let game = {
-  spice: 0,
-  spiceGoal: 0,
-  units: [],
-  buildings: [],
-  enemies: [],
-  spicePatches: [],
-  selectedUnit: null,
-  selectedHarvester: null,
-  mouse: { x: 0, y: 0 },
-  nextId: 1,
-  gameOver: false,
-  gameWon: false,
-};
-
-const GRID_SIZE = 40;
-
-// Helpers
-function dist(a, b) {
-  return Math.hypot(a.x - b.x, a.y - b.y);
-}
-
-function createUnit(type, x, y) {
-  const unitDef = UnitTypes[type.toUpperCase()];
-  return {
-    id: game.nextId++,
-    type,
-    x,
-    y,
-    tx: null,
-    ty: null,
-    speed: unitDef.speed,
-    size: unitDef.size,
-    color: unitDef.color,
-    label: unitDef.label,
-    hp: unitDef.hp,
-    attackPower: unitDef.attackPower,
-    attackRange: unitDef.attackRange,
-    carried: 0,
-    capacity: unitDef.capacity,
-    state: "idle",
-    harvestTimer: 0,
-    attackCooldown: 0,
-  };
-}
-
-function createBuilding(type, x, y) {
-  const bDef = BuildingTypes[type.toUpperCase()];
-  return {
-    id: game.nextId++,
-    type,
-    x,
-    y,
-    size: bDef.size,
-    color: bDef.color,
-    hp: bDef.hp,
-  };
-}
-
-// Input handling
-canvas.addEventListener("mousemove", (e) => {
-  const rect = canvas.getBoundingClientRect();
-  game.mouse.x = e.clientX - rect.left;
-  game.mouse.y = e.clientY - rect.top;
-});
-
-canvas.addEventListener("contextmenu", (e) => e.preventDefault());
-
-canvas.addEventListener("mousedown", (e) => {
-  if (game.gameOver) return;
-  if (e.button !== 0) return; // Left click only
-
-  // Check for unit selection
-  let clickedUnit = game.units.find(u => {
-    return dist(u, game.mouse) < u.size / 2;
-  });
-  if (clickedUnit) {
-    game.selectedUnit = clickedUnit;
-    if (clickedUnit.type === "harvester") game.selectedHarvester = clickedUnit;
-    else game.selectedHarvester = null;
-    return;
-  }
-
-  // Check for building selection
-  let clickedBuilding = game.buildings.find(b => {
-    return Math.abs(b.x - game.mouse.x) < b.size / 2 && Math.abs(b.y - game.mouse.y) < b.size / 2;
-  });
-  if (clickedBuilding) {
-    game.selectedUnit = null;
-    game.selectedHarvester = null;
-    return;
-  }
-
-  // If a harvester selected and click on spice patch => set harvest target
-  if (game.selectedHarvester) {
-    let patch = game.spicePatches.find(s => {
-      let dx = s.x - game.mouse.x;
-      let dy = s.y - game.mouse.y;
-      return dx * dx + dy * dy < s.radius * s.radius;
-    });
-    if (patch && patch.amount > 0) {
-      game.selectedHarvester.state = "movingToSpice";
-      game.selectedHarvester.targetPatchId = patch.id;
-      game.selectedHarvester.tx = patch.x + (Math.random() - 0.5) * 10;
-      game.selectedHarvester.ty = patch.y + (Math.random() - 0.5) * 10;
-      game.selectedHarvester.harvestTimer = 0;
-      logMessage("Harvester ordered to harvest spice.");
-      return;
-    }
-  }
-
-  // Otherwise move selected unit to clicked location
-  if (game.selectedUnit) {
-    game.selectedUnit.tx = game.mouse.x;
-    game.selectedUnit.ty = game.mouse.y;
-    game.selectedUnit.state = "moving";
-  }
-});
-
-window.addEventListener("keydown", (e) => {
-  if (game.gameOver) return;
-  if (e.key.toLowerCase() === "b") {
-    attemptBuildBarracks(game.mouse.x, game.mouse.y);
-  } else if (e.key.toLowerCase() === "t") {
-    attemptTrainTrooper();
-  }
-});
+setupInput(canvas, game, logMessage, attemptBuildBarracks, attemptTrainTrooper);
 
 function attemptBuildBarracks(x, y) {
   if (game.spice < BuildingTypes.BARRACKS.cost) {
@@ -411,6 +290,7 @@ function gameLoop() {
 
   update(dt);
   draw();
+  updateHUD(game); // <-- Ensure HUD is updated every frame
   checkWinLose();
 
   requestAnimationFrame(gameLoop);

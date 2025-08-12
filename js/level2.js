@@ -1,3 +1,7 @@
+import { game, createBuilding, createUnit } from './gameState.js';
+import { UnitTypes } from './entities.js';
+import { logMessage } from './ui.js';
+
 // Level 2: harder, more spice, enemies, and multiple spice patches
 
 function createEnemyUnit(type, x, y) {
