@@ -28,6 +28,6 @@ jobs:
         run: |
           npx http-server . &
           sleep 2
-          npx playwright open http://localhost:8080/tests/index.html
+          node tests/playwright-mocha-check.js
         env:
           CI: true
