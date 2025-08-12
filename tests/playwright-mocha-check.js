@@ -14,12 +14,6 @@ const { chromium } = require('playwright');
 
   // Get number of failures from the Mocha UI
   const failures = await page.$eval('.failures em', el => parseInt(el.textContent, 10));
-  let failures = 0;
-  const failuresElem = await page.$('.failures em');
-  if (failuresElem) {
-    const text = await failuresElem.textContent();
-    failures = parseInt(text, 10);
-  }
   await browser.close();
 
   if (failures > 0) {
