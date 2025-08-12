@@ -16,7 +16,7 @@ function attemptBuildBarracks(x, y) {
   // Clamp within canvas with some padding
   x = Math.min(Math.max(x, 40), canvas.width - 40);
   y = Math.min(Math.max(y, 40), canvas.height - 40);
-  game.buildings.push(createBuilding("barracks", x, y, BuildingTypes));
+  game.buildings.push(createBuilding("barracks", x, y));
   game.spice -= BuildingTypes.BARRACKS.cost;
   logMessage("Barracks built.");
 }
