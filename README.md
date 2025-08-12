@@ -22,12 +22,28 @@ See latest deployed game here: https://ofiryaron.com/dune2-web/
 - `js/level1.js`: Level 1 setup (basic harvesting and building).
 - `js/level2.js`: Level 2 setup (adds enemies and more spice patches).
 
-## How to Play
+## How to Run Locally (Avoid CORS Issues)
 
-1. Open `index.html` in a browser.
-2. Use the mouse to select and control units.
-3. Harvest spice, build barracks, and train troopers.
-4. Progress through levels by meeting spice goals and defeating enemies.
+Modern browsers block ES6 modules and some resources when opened directly from the file system due to CORS restrictions. To run the game locally, you must use a local web server:
+
+### Option 1: Python (if installed)
+```sh
+python3 -m http.server 8080
+```
+Then open [http://localhost:8080](http://localhost:8080) in your browser.
+
+### Option 2: Node.js (if installed)
+Install `http-server` globally:
+```sh
+npm install -g http-server
+```
+Then run:
+```sh
+http-server -p 8080
+```
+And open [http://localhost:8080](http://localhost:8080).
+
+This will resolve CORS errors and allow ES6 modules to load correctly.
 
 ## Customization
 
