@@ -1,6 +1,8 @@
 # Dune 2 Lite (Web)
 
 A simplified web-based real-time strategy (RTS) game inspired by Dune 2. The game runs entirely in the browser using HTML5 Canvas and JavaScript.
+See latest deployed game here: https://ofiryaron.com/dune2-web/
+
 
 ## Features
 
