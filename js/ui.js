@@ -1,4 +1,4 @@
-function updateHUD(game) {
+export function updateHUD(game) {
   const spiceEl = document.getElementById("spice");
   const carriedEl = document.getElementById("carried");
   const bcountEl = document.getElementById("bcount");
@@ -10,7 +10,7 @@ function updateHUD(game) {
   ucountEl.textContent = game.units.filter(u => u.type === "trooper").length;
 }
 
-function logMessage(msg) {
+export function logMessage(msg) {
   const log = document.getElementById("log");
   const entry = document.createElement("div");
   const timestamp = new Date().toLocaleTimeString();

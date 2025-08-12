@@ -1,5 +1,4 @@
-// Unit and Building Types and Stats
-const UnitTypes = {
+export const UnitTypes = {
   HARVESTER: {
     name: "Harvester",
     speed: 70,
@@ -26,7 +25,7 @@ const UnitTypes = {
   },
 };
 
-const BuildingTypes = {
+export const BuildingTypes = {
   BASE: {
     name: "Base",
     size: 56,
