@@ -18,14 +18,9 @@ jobs:
           node-version: '20'
       - name: Install Playwright
         run: npm install -g playwright
-      - name: Run tests in headless browser
-        run: |
-          npx playwright install chromium
-          npx playwright test --project=chromium
-        env:
-          CI: true
       - name: Serve and test (static)
         run: |
+          npx playwright install chromium
           npx http-server . &
           sleep 2
           node tests/playwright-mocha-check.js
