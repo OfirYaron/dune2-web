@@ -1,6 +1,8 @@
 // gameState.js
 // Core game state object and helpers
 
+import { BuildingTypes, UnitTypes } from './entities.js';
+
 export const game = {
   spice: 0,
   spiceGoal: 0,
@@ -22,7 +24,7 @@ export function dist(a, b) {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
-export function createUnit(type, x, y, UnitTypes) {
+export function createUnit(type, x, y) {
   const unitDef = UnitTypes[type.toUpperCase()];
   return {
     id: game.nextId++,
@@ -46,7 +48,7 @@ export function createUnit(type, x, y, UnitTypes) {
   };
 }
 
-export function createBuilding(type, x, y, BuildingTypes) {
+export function createBuilding(type, x, y) {
   const bDef = BuildingTypes[type.toUpperCase()];
   return {
     id: game.nextId++,

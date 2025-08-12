@@ -1,5 +1,4 @@
 import { game, createBuilding, createUnit } from './gameState.js';
-import { BuildingTypes, UnitTypes } from './entities.js';
 import { logMessage } from './ui.js';
 
 // Level 1: basic harvesting and building training
@@ -18,10 +17,10 @@ function loadLevel1() {
   game.gameWon = false;
 
   // Add Base building
-  game.buildings.push(createBuilding("base", 100, 300, BuildingTypes));
+  game.buildings.push(createBuilding("base", 100, 300));
 
   // Add one harvester
-  game.units.push(createUnit("harvester", 130, 320, UnitTypes));
+  game.units.push(createUnit("harvester", 130, 320));
 
   // Add spice patches
   game.spicePatches.push(

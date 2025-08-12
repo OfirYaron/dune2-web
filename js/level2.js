@@ -1,5 +1,5 @@
 import { game, createBuilding, createUnit } from './gameState.js';
-import { UnitTypes, BuildingTypes } from './entities.js';
+import { UnitTypes } from './entities.js';
 import { logMessage } from './ui.js';
 
 // Level 2: harder, more spice, enemies, and multiple spice patches
@@ -47,13 +47,13 @@ function loadLevel2() {
   game.gameWon = false;
 
   // Player base
-  game.buildings.push(createBuilding("base", 100, 300, BuildingTypes));
+  game.buildings.push(createBuilding("base", 100, 300));
 
   // Player harvester
-  game.units.push(createUnit("harvester", 130, 320, UnitTypes));
+  game.units.push(createUnit("harvester", 130, 320));
 
   // Player barracks
-  game.buildings.push(createBuilding("barracks", 170, 350, BuildingTypes));
+  game.buildings.push(createBuilding("barracks", 170, 350));
 
   // Spice patches
   game.spicePatches.push(
@@ -63,8 +63,8 @@ function loadLevel2() {
   );
 
   // Enemy base & barracks
-  game.buildings.push(createBuilding("enemy_base", 700, 200, BuildingTypes));
-  game.buildings.push(createBuilding("enemy_barracks", 740, 250, BuildingTypes));
+  game.buildings.push(createBuilding("enemy_base", 700, 200));
+  game.buildings.push(createBuilding("enemy_barracks", 740, 250));
 
   // Enemy troops patrolling near enemy base
   for (let i = 0; i < 3; i++) {
