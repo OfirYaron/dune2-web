@@ -1,68 +1,61 @@
 // ui.test.js
 // Tests for UI updates and HUD logic
 
+function createGameState({ spice = 0, carried = null, buildings = [], units = [] } = {}) {
+  return {
+    spice,
+    selectedHarvester: carried !== null ? { carried } : null,
+    buildings,
+    units
+  };
+}
+
+function setupHUDandLogElements() {
+  const ids = ['spice', 'carried', 'bcount', 'ucount', 'log'];
+  ids.forEach(id => {
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      document.body.appendChild(el);
+    } else {
+      el.textContent = '';
+    }
+  });
+}
+
 describe('UI Module', function() {
   beforeEach(function() {
-    // Only reset HUD and log elements, do not overwrite the whole body
-    let spice = document.getElementById('spice');
-    let carried = document.getElementById('carried');
-    let bcount = document.getElementById('bcount');
-    let ucount = document.getElementById('ucount');
-    let log = document.getElementById('log');
-    if (!spice) {
-      spice = document.createElement('div');
-      spice.id = 'spice';
-      document.body.appendChild(spice);
-    } else { spice.textContent = ''; }
-    if (!carried) {
-      carried = document.createElement('div');
-      carried.id = 'carried';
-      document.body.appendChild(carried);
-    } else { carried.textContent = ''; }
-    if (!bcount) {
-      bcount = document.createElement('div');
-      bcount.id = 'bcount';
-      document.body.appendChild(bcount);
-    } else { bcount.textContent = ''; }
-    if (!ucount) {
-      ucount = document.createElement('div');
-      ucount.id = 'ucount';
-      document.body.appendChild(ucount);
-    } else { ucount.textContent = ''; }
-    if (!log) {
-      log = document.createElement('div');
-      log.id = 'log';
-      document.body.appendChild(log);
-    } else { log.textContent = ''; }
+    setupHUDandLogElements();
   });
 
   it('should update HUD when resources change', function() {
-    const game = { spice: 123, selectedHarvester: { carried: 45 }, buildings: [], units: [] };
+    const game = createGameState({ spice: 123, carried: 45 });
     updateHUD(game);
     chai.assert.equal(document.getElementById('spice').textContent, '123');
     chai.assert.equal(document.getElementById('carried').textContent, '45');
   });
 
   it('should update HUD spice count', function() {
-    const game = { spice: 99, selectedHarvester: null, buildings: [], units: [] };
+    const game = createGameState({ spice: 99 });
     updateHUD(game);
     chai.assert.equal(document.getElementById('spice').textContent, '99');
   });
 
   it('should update HUD carried amount', function() {
-    const game = { spice: 0, selectedHarvester: { carried: 77 }, buildings: [], units: [] };
+    const game = createGameState({ carried: 77 });
     updateHUD(game);
     chai.assert.equal(document.getElementById('carried').textContent, '77');
   });
 
   it('should update HUD building count', function() {
-    const game = { spice: 0, selectedHarvester: null, buildings: [{type:'barracks'}, {type:'barracks'}, {type:'factory'}], units: [] };
+    const game = createGameState({ buildings: [{type:'barracks'}, {type:'barracks'}, {type:'factory'}] });
     updateHUD(game);
     chai.assert.equal(document.getElementById('bcount').textContent, '2');
   });
 
   it('should update HUD troop count', function() {
-    const game = { spice: 0, selectedHarvester: null, buildings: [], units: [{type:'trooper'}, {type:'trooper'}, {type:'harvester'}] };
+    const game = createGameState({ units: [{type:'trooper'}, {type:'trooper'}, {type:'harvester'}] });
     updateHUD(game);
     chai.assert.equal(document.getElementById('ucount').textContent, '2');
   });
