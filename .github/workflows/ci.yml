@@ -1,12 +1,9 @@
+# This workflow is currently disabled.
+# To re-enable, change 'workflow_call' to 'push' and 'pull_request' triggers.
 name: CI
 
 on:
-  push:
-    branches:
-      - '**'
-  pull_request:
-    branches:
-      - '**'
+  workflow_call:
 
 jobs:
   build:
