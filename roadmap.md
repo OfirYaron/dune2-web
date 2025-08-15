@@ -21,7 +21,7 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 4. **Set Up GitHub Actions CI** [Issue](https://github.com/OfirYaron/dune2-web/issues/10)
    - Run tests and linting on every push and PR.
    - Fail builds on test or lint errors.
-5. **Automate Deployment**
+5. **Automate Deployment** [Issue](https://github.com/OfirYaron/dune2-web/issues/12)
    - Use GitHub Pages (or similar) for auto-deployment on main branch updates.
    - Add deployment status badge to README.
 
