@@ -147,11 +147,24 @@ function drawGrid() {
   }
 }
 
+// --- Graphics & Animation Foundation ---
+// TODO: Replace fillRect with sprite or SVG rendering for units/buildings
+// TODO: Add animation state and frame for units (e.g., walking, harvesting, attacking)
+// TODO: Implement explosion/combat animation rendering
+// TODO: Add camera object for panning/zoom (initial stub)
+let camera = {
+  x: 0,
+  y: 0,
+  zoom: 1,
+};
+// --- End Graphics & Animation Foundation ---
+
 function draw() {
   // Clear canvas with sand color
+  ctx.save();
+  ctx.setTransform(camera.zoom, 0, 0, camera.zoom, -camera.x, -camera.y);
   ctx.fillStyle = "#c2b280";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
   drawGrid();
 
   // Draw spice patches
@@ -174,13 +187,14 @@ function draw() {
     ctx.fillText(Math.floor(patch.amount), patch.x, patch.y + 5);
   }
 
-  // Draw buildings
+  // Draw buildings (replace with sprite/SVG in future)
   for (let b of game.buildings) {
     ctx.fillStyle = b.color;
     ctx.strokeStyle = "#222";
     ctx.lineWidth = 3;
     ctx.fillRect(b.x - b.size / 2, b.y - b.size / 2, b.size, b.size);
     ctx.strokeRect(b.x - b.size / 2, b.y - b.size / 2, b.size, b.size);
+    // TODO: Draw building sprite/SVG here
 
     // Label
     ctx.fillStyle = "#fff";
@@ -195,14 +209,14 @@ function draw() {
     );
   }
 
-  // Draw units
+  // Draw units (replace with sprite/SVG and add animation)
   for (let u of game.units) {
-    // Unit body
     ctx.fillStyle = u.color;
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 2;
     ctx.fillRect(u.x - u.size / 2, u.y - u.size / 2, u.size, u.size);
     ctx.strokeRect(u.x - u.size / 2, u.y - u.size / 2, u.size, u.size);
+    // TODO: Draw unit sprite/SVG and animation frame here
 
     // Unit label
     ctx.fillStyle = "#000";
@@ -231,6 +245,7 @@ function draw() {
       game.selectedUnit.size + 6
     );
   }
+  ctx.restore();
 }
 
 function checkWinLose() {
@@ -280,6 +295,30 @@ function showEndScreen(win) {
   message.textContent = win ? "YOU WIN!" : "YOU LOSE!";
   document.body.appendChild(message);
 }
+
+// --- Camera Panning & Zoom Input Stub ---
+canvas.addEventListener('wheel', (e) => {
+  camera.zoom = Math.max(0.5, Math.min(2, camera.zoom + (e.deltaY < 0 ? 0.1 : -0.1)));
+});
+let isPanning = false;
+let panStart = { x: 0, y: 0 };
+canvas.addEventListener('mousedown', (e) => {
+  if (e.button === 1) { // Middle mouse button
+    isPanning = true;
+    panStart.x = e.clientX;
+    panStart.y = e.clientY;
+  }
+});
+canvas.addEventListener('mousemove', (e) => {
+  if (isPanning) {
+    camera.x -= (e.clientX - panStart.x) / camera.zoom;
+    camera.y -= (e.clientY - panStart.y) / camera.zoom;
+    panStart.x = e.clientX;
+    panStart.y = e.clientY;
+  }
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+// --- End Camera Panning & Zoom Input Stub ---
 
 let lastFrame = performance.now();
 function gameLoop() {
