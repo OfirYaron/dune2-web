@@ -9,13 +9,13 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 1. **Refactor Codebase for Modularity** [Issue](https://github.com/OfirYaron/dune2-web/issues/4)
    - Split logic into modules (entities, rendering, input, game state, etc.)
    - Use ES6 modules for better structure and maintainability.
-2. **Add Unit and Integration Tests**
+2. **Add Unit and Integration Tests** [Issue](https://github.com/OfirYaron/dune2-web/issues/6)
    - Set up a vanilla JS testing framework (e.g., Jasmine or Mocha via CDN).
    - Write tests for core logic: unit movement, harvesting, combat, building placement.
    - Add tests for UI updates and HUD logic.
    - Add test run on CI (GitHub Actions).
    - Ensure tests cover all game mechanics and edge cases.
-3. **Implement Linting and Code Style**
+3. **Implement Linting and Code Style** [Issue](https://github.com/OfirYaron/dune2-web/issues/8)
    - Add ESLint with a strict config for vanilla JS.
    - Document code style guidelines in `CONTRIBUTING.md`.
 4. **Set Up GitHub Actions CI**

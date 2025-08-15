@@ -1,4 +1,4 @@
-import { game, GRID_SIZE, dist, createUnit, createBuilding } from './gameState.js';
+import { game, GRID_SIZE, createUnit, createBuilding } from './gameState.js';
 import { setupInput } from './input.js';
 import { UnitTypes, BuildingTypes } from './entities.js';
 import { updateHUD, logMessage } from './ui.js';
@@ -38,7 +38,6 @@ function attemptTrainTrooper() {
 }
 
 // Game update loop
-let lastTime = performance.now();
 function update(dt) {
   if (game.gameOver) return;
 
