@@ -18,7 +18,7 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 3. **Implement Linting and Code Style** [Issue](https://github.com/OfirYaron/dune2-web/issues/8)
    - Add ESLint with a strict config for vanilla JS.
    - Document code style guidelines in `CONTRIBUTING.md`.
-4. **Set Up GitHub Actions CI**
+4. **Set Up GitHub Actions CI** [Issue](https://github.com/OfirYaron/dune2-web/issues/10)
    - Run tests and linting on every push and PR.
    - Fail builds on test or lint errors.
 5. **Automate Deployment**
