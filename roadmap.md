@@ -13,6 +13,8 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
    - Set up a vanilla JS testing framework (e.g., Jasmine or Mocha via CDN).
    - Write tests for core logic: unit movement, harvesting, combat, building placement.
    - Add tests for UI updates and HUD logic.
+   - Add test run on CI (GitHub Actions).
+   - Ensure tests cover all game mechanics and edge cases.
 3. **Implement Linting and Code Style**
    - Add ESLint with a strict config for vanilla JS.
    - Document code style guidelines in `CONTRIBUTING.md`.
@@ -99,6 +101,15 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 - Regularly update tests and documentation.
 - Monitor issues and user feedback.
 - Prioritize bug fixes and quality-of-life improvements.
+
+---
+
+## Future: Automated Test Coverage Reporting
+
+- Integrate a coverage tool (e.g., Istanbul/nyc) for JavaScript.
+- Generate coverage reports for all unit and integration tests.
+- Display coverage status in README and CI.
+- Ensure coverage thresholds for PRs and main branch.
 
 ---
 
