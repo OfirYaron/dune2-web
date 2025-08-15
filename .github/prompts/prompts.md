@@ -1,7 +1,7 @@
 # getting started with a the next task
 ## getting the issue ready
 please take the next task in the roadmap that does not have a linked issue and create a github issue for it using ghcli
-before running command show me the title and description you plan to set for the issue (make sure the description doesn't break the markdown formatting)
+before running command show me the title and description you plan to set for the issue (make sure the description doesn't break the markdown formatting and uses proper newlines)
 ## connect issue to roadmap
 now please take that issue and link it in the roadmap
 ## create a branch
