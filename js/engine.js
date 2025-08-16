@@ -689,56 +689,15 @@ window.onload = () => {
 function isEnemyUnit(u) {
   return u.isEnemy === true;
 }
-function getPlayerUnits() {
-  return game.units.filter(u => !isEnemyUnit(u));
-}
-function getEnemyUnits() {
-  return game.units.filter(u => isEnemyUnit(u));
-}
 
-// --- Unit Engage Radius Config ---
-const ENGAGE_RADIUS = {
-  TROOPER: 80, // pixels, can be tuned
-  HARVESTER: 60,
-  DEFAULT: 60
-};
-// --- End Engage Radius Config ---
-
-// --- Level Picker Popup ---
-document.addEventListener('keydown', (e) => {
-  if ((e.key === 'q' || e.key === 'Q') && !document.getElementById('level-picker-popup')) {
-    const popup = document.createElement('div');
-    popup.id = 'level-picker-popup';
-    popup.style.position = 'fixed';
-    popup.style.top = '50%';
-    popup.style.left = '50%';
-    popup.style.transform = 'translate(-50%, -50%)';
-    popup.style.background = 'rgba(40,40,80,0.97)';
-    popup.style.color = '#fff';
-    popup.style.fontSize = '24px';
-    popup.style.padding = '32px 48px';
-    popup.style.borderRadius = '12px';
-    popup.style.zIndex = '10002';
-    popup.style.textAlign = 'center';
-    popup.style.boxShadow = '0 4px 16px #0008';
-    popup.innerHTML = `
-      <div style="margin-bottom:18px;font-size:32px;font-weight:bold;">Pick Level</div>
-      <button id="level1-btn" style="margin:8px 24px;padding:12px 32px;font-size:22px;border-radius:8px;border:none;background:#e0c040;color:#222;cursor:pointer;">Level 1</button>
-      <button id="level2-btn" style="margin:8px 24px;padding:12px 32px;font-size:22px;border-radius:8px;border:none;background:#e0c040;color:#222;cursor:pointer;">Level 2</button>
-      <div style="margin-top:24px;"><button id="cancel-level-picker" style="padding:8px 24px;fontSize:18px;border-radius:6px;border:none;background:#444;color:#fff;cursor:pointer;">Cancel</button></div>
-    `;
-    document.body.appendChild(popup);
-    document.getElementById('level1-btn').onclick = () => {
-      document.getElementById('level-picker-popup')?.remove();
-      loadLevel(1);
-    };
-    document.getElementById('level2-btn').onclick = () => {
-      document.getElementById('level-picker-popup')?.remove();
-      loadLevel(2);
-    };
-    document.getElementById('cancel-level-picker').onclick = () => {
-      document.getElementById('level-picker-popup')?.remove();
-    };
+// Expose a small helper to set the objective display (used by end-screen and level transitions)
+function showObjective(msg) {
+  const el = document.getElementById('objective-text');
+  if (el) {
+    el.textContent = msg;
+    return;
   }
-});
-// --- End Level Picker Popup ---
+  // Fallback: refresh HUD objective and log message for visibility
+  refreshObjectiveText();
+  if (msg) logMessage(msg);
+}
