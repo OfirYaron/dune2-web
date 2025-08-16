@@ -133,38 +133,49 @@ function update(dt) {
       }
     }
 
-    // Trooper combat - placeholder, no enemies yet
-    if (u.type === "trooper") {
-      // TODO: Implement enemy combat in level2.js
-    }
-    // Enemy troop AI (level 2)
-    if (isEnemyUnit(u)) {
-      // Find nearest player unit
-      let targets = getPlayerUnits();
-      let closest = null, minDist = 9999;
-      for (let t of targets) {
-        let d = Math.hypot(u.x - t.x, u.y - t.y);
-        if (d < minDist) { minDist = d; closest = t; }
-      }
-      // Move toward and attack if close
-      if (closest) {
-        if (minDist > 30) {
-          // Move toward player
-          let dx = closest.x - u.x;
-          let dy = closest.y - u.y;
-          let dist = Math.hypot(dx, dy);
-          let step = (u.speed * dt) / 1000;
-          u.x += (dx / dist) * step;
-          u.y += (dy / dist) * step;
-        } else {
-          // Attack
+    // Trooper combat
+    if (u.type === "trooper" && !isEnemyUnit(u)) {
+      for (let enemy of game.units) {
+        if (isEnemyUnit(enemy) && Math.hypot(u.x - enemy.x, u.y - enemy.y) <= UnitTypes.TROOPER.attackRange) {
           if (!u.attackCooldown || u.attackCooldown <= 0) {
-            closest.hp -= u.attackPower || 18;
+            enemy.hp -= u.attackPower || 15;
             u.attackCooldown = 800;
-            logMessage('Enemy attacks!');
+            logMessage(`Trooper attacks enemy! [Attacker: id=${u.id||'?'} hp=${u.hp}] [Target: id=${enemy.id||'?'} hp=${enemy.hp}]`);
           } else {
             u.attackCooldown -= dt;
           }
+        }
+      }
+    }
+    // Enemy troop combat
+    if (u.type === "trooper" && isEnemyUnit(u)) {
+      for (let player of game.units) {
+        if (!isEnemyUnit(player) && Math.hypot(u.x - player.x, u.y - player.y) <= UnitTypes.TROOPER.attackRange) {
+          if (!u.attackCooldown || u.attackCooldown <= 0) {
+            player.hp -= u.attackPower || 18;
+            u.attackCooldown = 800;
+            logMessage(`Enemy trooper attacks! [Attacker: id=${u.id||'?'} hp=${u.hp}] [Target: id=${player.id||'?'} hp=${player.hp}]`);
+          } else {
+            u.attackCooldown -= dt;
+          }
+        }
+      }
+    }
+    // Harvester crush logic (kills any trooper it overlaps)
+    if (u.type === "harvester") {
+      for (let target of game.units) {
+        if (target !== u && target.type === "trooper" && Math.hypot(u.x - target.x, u.y - target.y) < (u.size + target.size) / 2) {
+          target.hp = 0;
+          logMessage(`Trooper crushed by harvester! [Harvester: id=${u.id||'?'} hp=${u.hp}] [Trooper: id=${target.id||'?'} hp=${target.hp}]`);
+        }
+      }
+    }
+    // Vehicle crush logic
+    if ((u.type === "harvester") || (UnitTypes[u.type.toUpperCase()]?.isVehicle)) {
+      for (let target of game.units) {
+        if (target !== u && target.type === "trooper" && !isEnemyUnit(u) && Math.hypot(u.x - target.x, u.y - target.y) < (u.size + target.size) / 2) {
+          target.hp = 0;
+          logMessage('Trooper crushed by vehicle!');
         }
       }
     }
@@ -172,6 +183,9 @@ function update(dt) {
 
   // Remove depleted spice patches
   game.spicePatches = game.spicePatches.filter(s => s.amount > 0);
+
+  // Remove dead units (hp <= 0)
+  game.units = game.units.filter(u => u.hp > 0);
 
   // After unloading spice, auto-return to patch if not depleted
   for (let u of game.units) {
@@ -398,13 +412,14 @@ function draw() {
     ctx.textAlign = "center";
     ctx.fillText(u.label, 0, 18);
     // HP bar (above)
-    const hpRatio = u.hp / (UnitTypes[u.type.toUpperCase()]?.hp || 100);
+    const maxHp = UnitTypes[u.type.toUpperCase()]?.hp || 100;
+    const hpRatio = Math.max(0, Math.min(u.hp / maxHp, 1));
     ctx.fillStyle = hpRatio > 0.5 ? "#0f0" : hpRatio > 0.2 ? "#fa0" : "#f00";
     ctx.fillRect(-8, -14, 16 * hpRatio, 4);
     ctx.strokeStyle = "#000";
     ctx.strokeRect(-8, -14, 16, 4);
     // Spice bar (below)
-    const spiceRatio = u.carried / (u.capacity || 100);
+    const spiceRatio = Math.max(0, Math.min(u.carried / (u.capacity || 100), 1));
     ctx.fillStyle = "#ff9800"; // orange for spice
     ctx.fillRect(-8, 12, 16 * spiceRatio, 4);
     ctx.strokeStyle = "#663300";
@@ -492,10 +507,16 @@ function loadLevel(levelNum) {
   if (levelNum === 1) {
     import('./level1.js').then(() => {
       // HUD now handles objective
+      refreshObjectiveText();
+      // Ensure HUD is up-to-date after level load
+      showHUD(game);
     });
   } else if (levelNum === 2) {
     import('./level2.js').then(() => {
       // HUD now handles objective
+      refreshObjectiveText();
+      // Ensure HUD is up-to-date after level load
+      showHUD(game);
     });
   }
 }
@@ -517,6 +538,14 @@ function getObjectiveText(level) {
   if (level === 1) return 'Objective: Harvest 200 spice.';
   if (level === 2) return 'Objective: Harvest 400 spice and destroy all enemy buildings.';
   return '';
+}
+
+// Ensure the objective text in the HUD is refreshed when the current level changes
+function refreshObjectiveText() {
+  const el = document.getElementById('objective-text');
+  if (el) {
+    el.textContent = getObjectiveText(window.currentLevel || currentLevel || 1);
+  }
 }
 // --- End HUD Helper Functions ---
 
@@ -553,6 +582,7 @@ function showHUD(game) {
           <li><b>Left Click</b>: Select units/buildings, set move/harvest target</li>
           <li><b>B</b>: Build Barracks at mouse location</li>
           <li><b>T</b>: Train Trooper (if Barracks exists)</li>
+          <li><b>Q</b>: Level Picker (jump to any level)</li>
           <li><b>Middle Mouse</b>: Pan camera</li>
           <li><b>Mouse Wheel</b>: Zoom camera</li>
         </ul>
@@ -575,6 +605,11 @@ function showHUD(game) {
     const statsSpan = document.getElementById('hud-stats-values');
     if (statsSpan) {
       statsSpan.innerHTML = getHUDText(game);
+    }
+    // Refresh the objective text as well (preserve visibility state of objective-details)
+    const objectiveEl = document.getElementById('objective-text');
+    if (objectiveEl) {
+      objectiveEl.textContent = getObjectiveText(window.currentLevel || currentLevel || 1);
     }
     // Do not touch controls-details or objective-details so their state is preserved
   }
@@ -604,6 +639,29 @@ canvas.addEventListener('mousemove', (e) => {
 });
 window.addEventListener('mouseup', () => { isPanning = false; });
 // --- End Camera Panning & Zoom Input Stub ---
+
+// --- Selection logic ---
+canvas.addEventListener('mousedown', (e) => {
+  if (e.button === 1) { // Middle mouse button
+    isPanning = true;
+    panStart.x = e.clientX;
+    panStart.y = e.clientY;
+    return;
+  }
+  // Only allow selection of player units (not enemy)
+  const rect = canvas.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) / camera.zoom + camera.x;
+  const my = (e.clientY - rect.top) / camera.zoom + camera.y;
+  let found = null;
+  for (let u of game.units) {
+    if (!isEnemyUnit(u) && Math.abs(u.x - mx) < u.size / 2 && Math.abs(u.y - my) < u.size / 2) {
+      found = u;
+      break;
+    }
+  }
+  game.selectedUnit = found;
+});
+// --- End Selection logic ---
 
 let lastFrame = performance.now();
 function gameLoop() {
@@ -637,3 +695,50 @@ function getPlayerUnits() {
 function getEnemyUnits() {
   return game.units.filter(u => isEnemyUnit(u));
 }
+
+// --- Unit Engage Radius Config ---
+const ENGAGE_RADIUS = {
+  TROOPER: 80, // pixels, can be tuned
+  HARVESTER: 60,
+  DEFAULT: 60
+};
+// --- End Engage Radius Config ---
+
+// --- Level Picker Popup ---
+document.addEventListener('keydown', (e) => {
+  if ((e.key === 'q' || e.key === 'Q') && !document.getElementById('level-picker-popup')) {
+    const popup = document.createElement('div');
+    popup.id = 'level-picker-popup';
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.background = 'rgba(40,40,80,0.97)';
+    popup.style.color = '#fff';
+    popup.style.fontSize = '24px';
+    popup.style.padding = '32px 48px';
+    popup.style.borderRadius = '12px';
+    popup.style.zIndex = '10002';
+    popup.style.textAlign = 'center';
+    popup.style.boxShadow = '0 4px 16px #0008';
+    popup.innerHTML = `
+      <div style="margin-bottom:18px;font-size:32px;font-weight:bold;">Pick Level</div>
+      <button id="level1-btn" style="margin:8px 24px;padding:12px 32px;font-size:22px;border-radius:8px;border:none;background:#e0c040;color:#222;cursor:pointer;">Level 1</button>
+      <button id="level2-btn" style="margin:8px 24px;padding:12px 32px;font-size:22px;border-radius:8px;border:none;background:#e0c040;color:#222;cursor:pointer;">Level 2</button>
+      <div style="margin-top:24px;"><button id="cancel-level-picker" style="padding:8px 24px;fontSize:18px;border-radius:6px;border:none;background:#444;color:#fff;cursor:pointer;">Cancel</button></div>
+    `;
+    document.body.appendChild(popup);
+    document.getElementById('level1-btn').onclick = () => {
+      document.getElementById('level-picker-popup')?.remove();
+      loadLevel(1);
+    };
+    document.getElementById('level2-btn').onclick = () => {
+      document.getElementById('level-picker-popup')?.remove();
+      loadLevel(2);
+    };
+    document.getElementById('cancel-level-picker').onclick = () => {
+      document.getElementById('level-picker-popup')?.remove();
+    };
+  }
+});
+// --- End Level Picker Popup ---
