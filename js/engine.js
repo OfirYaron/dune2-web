@@ -82,6 +82,7 @@ function update(dt) {
         if (Math.hypot(u.x - u.tx, u.y - u.ty) < 6) {
           u.state = "harvesting";
           u.harvestTimer = 0;
+          u.lastPatchId = u.targetPatchId;
         }
       } else if (u.state === "harvesting") {
         let patch = game.spicePatches.find(s => s.id === u.targetPatchId);
@@ -110,12 +111,24 @@ function update(dt) {
         const base = game.buildings.find(b => b.type === "base");
         if (!base) continue;
         if (Math.hypot(u.x - base.x, u.y - base.y) < 18) {
-          game.spice += u.carried;
-          u.carried = 0;
-          u.state = "idle";
-          u.tx = null;
-          u.ty = null;
-          logMessage("Harvester returned and unloaded spice.");
+          u.state = "unloading";
+          u.unloadTimer = 0;
+        }
+      } else if (u.state === "unloading") {
+        u.unloadTimer += dt;
+        if (u.unloadTimer >= 400 && u.carried > 0) { // same as harvest time
+          u.unloadTimer = 0;
+          let toUnload = Math.min(10, u.carried);
+          game.spice += toUnload;
+          u.carried -= toUnload;
+          if (u.carried === 0) {
+            u.state = "idle";
+            u.tx = null;
+            u.ty = null;
+            logMessage("Harvester finished unloading spice.");
+          } else {
+            logMessage(`Harvester unloaded ${toUnload} spice...`);
+          }
         }
       }
     }
@@ -124,10 +137,56 @@ function update(dt) {
     if (u.type === "trooper") {
       // TODO: Implement enemy combat in level2.js
     }
+    // Enemy troop AI (level 2)
+    if (isEnemyUnit(u)) {
+      // Find nearest player unit
+      let targets = getPlayerUnits();
+      let closest = null, minDist = 9999;
+      for (let t of targets) {
+        let d = Math.hypot(u.x - t.x, u.y - t.y);
+        if (d < minDist) { minDist = d; closest = t; }
+      }
+      // Move toward and attack if close
+      if (closest) {
+        if (minDist > 30) {
+          // Move toward player
+          let dx = closest.x - u.x;
+          let dy = closest.y - u.y;
+          let dist = Math.hypot(dx, dy);
+          let step = (u.speed * dt) / 1000;
+          u.x += (dx / dist) * step;
+          u.y += (dy / dist) * step;
+        } else {
+          // Attack
+          if (!u.attackCooldown || u.attackCooldown <= 0) {
+            closest.hp -= u.attackPower || 18;
+            u.attackCooldown = 800;
+            logMessage('Enemy attacks!');
+          } else {
+            u.attackCooldown -= dt;
+          }
+        }
+      }
+    }
   }
 
   // Remove depleted spice patches
   game.spicePatches = game.spicePatches.filter(s => s.amount > 0);
+
+  // After unloading spice, auto-return to patch if not depleted
+  for (let u of game.units) {
+    if (u.type === "harvester" && u.state === "idle" && u.lastPatchId) {
+      let patch = game.spicePatches.find(s => s.id === u.lastPatchId);
+      if (patch && patch.amount > 0) {
+        u.state = "movingToSpice";
+        u.targetPatchId = patch.id;
+        u.tx = patch.x + (Math.random() - 0.5) * 10;
+        u.ty = patch.y + (Math.random() - 0.5) * 10;
+        u.harvestTimer = 0;
+        logMessage("Harvester auto-returning to spice patch.");
+      }
+    }
+  }
 }
 
 function drawGrid() {
@@ -303,29 +362,53 @@ function draw() {
       ctx.lineWidth = 2;
       ctx.strokeRect(-12, -6, 24, 12);
     } else if (u.type === "trooper") {
-      // Trooper: blue body, helmet, gun
-      ctx.fillStyle = "#88CCFF";
-      ctx.fillRect(-8, -8, 16, 16); // body
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(-6, -12, 12, 6); // helmet
-      // Gun
-      ctx.fillStyle = "#222";
-      ctx.fillRect(2, 0, 8, 3);
-      ctx.strokeStyle = "#222";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(-8, -8, 16, 16);
+      if (isEnemyUnit(u)) {
+        // Enemy: red body, helmet, gun
+        ctx.fillStyle = "#bb4444";
+        ctx.fillRect(-8, -8, 16, 16);
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(-6, -12, 12, 6);
+        ctx.fillStyle = "#222";
+        ctx.fillRect(2, 0, 8, 3);
+        ctx.strokeStyle = "#f33";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-8, -8, 16, 16);
+        // Enemy label
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("ENEMY", 0, 28);
+      } else {
+        // Trooper: blue body, helmet, gun
+        ctx.fillStyle = "#88CCFF";
+        ctx.fillRect(-8, -8, 16, 16); // body
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(-6, -12, 12, 6); // helmet
+        // Gun
+        ctx.fillStyle = "#222";
+        ctx.fillRect(2, 0, 8, 3);
+        ctx.strokeStyle = "#222";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(-8, -8, 16, 16);
+      }
     }
     // Unit label
     ctx.fillStyle = "#000";
     ctx.font = "bold 14px Arial";
     ctx.textAlign = "center";
     ctx.fillText(u.label, 0, 18);
-    // Health bar
+    // HP bar (above)
     const hpRatio = u.hp / (UnitTypes[u.type.toUpperCase()]?.hp || 100);
     ctx.fillStyle = hpRatio > 0.5 ? "#0f0" : hpRatio > 0.2 ? "#fa0" : "#f00";
     ctx.fillRect(-8, -14, 16 * hpRatio, 4);
     ctx.strokeStyle = "#000";
     ctx.strokeRect(-8, -14, 16, 4);
+    // Spice bar (below)
+    const spiceRatio = u.carried / (u.capacity || 100);
+    ctx.fillStyle = "#ff9800"; // orange for spice
+    ctx.fillRect(-8, 12, 16 * spiceRatio, 4);
+    ctx.strokeStyle = "#663300";
+    ctx.strokeRect(-8, 12, 16, 4);
     ctx.restore();
   }
 
@@ -389,7 +472,114 @@ function showEndScreen(win) {
   message.style.fontWeight = "bold";
   message.textContent = win ? "YOU WIN!" : "YOU LOSE!";
   document.body.appendChild(message);
+  if (win) {
+    setTimeout(() => {
+      message.remove();
+      if (currentLevel === 1) {
+        loadLevel(2);
+      } else {
+        showObjective('Congratulations! You completed all levels.');
+      }
+    }, 2500);
+  }
 }
+
+// Move loadLevel definition above window.onload
+let currentLevel = 1;
+window.currentLevel = currentLevel;
+function loadLevel(levelNum) {
+  window.currentLevel = currentLevel = levelNum;
+  if (levelNum === 1) {
+    import('./level1.js').then(() => {
+      // HUD now handles objective
+    });
+  } else if (levelNum === 2) {
+    import('./level2.js').then(() => {
+      // HUD now handles objective
+    });
+  }
+}
+
+// --- HUD Helper Functions ---
+function getHUDText(game) {
+  const barracksCount = game.buildings.filter(b => b.type === 'barracks').length;
+  const trooperCount = game.units.filter(u => u.type === 'trooper' && !isEnemyUnit(u)).length;
+  const harvester = game.units.find(u => u.type === 'harvester');
+  const carry = harvester ? harvester.carried : 0;
+  return `
+    <span style="margin:0 24px;">Spice: <b>${game.spice}</b></span>
+    <span style="margin:0 24px;">Carry: <b>${carry}</b></span>
+    <span style="margin:0 24px;">Barracks: <b>${barracksCount}</b></span>
+    <span style="margin:0 24px;">Troops: <b>${trooperCount}</b></span>
+  `;
+}
+function getObjectiveText(level) {
+  if (level === 1) return 'Objective: Harvest 200 spice.';
+  if (level === 2) return 'Objective: Harvest 400 spice and destroy all enemy buildings.';
+  return '';
+}
+// --- End HUD Helper Functions ---
+
+// --- HUD Header ---
+function showHUD(game) {
+  let hud = document.getElementById('hud-header');
+  if (!hud) {
+    hud = document.createElement('div');
+    hud.id = 'hud-header';
+    hud.style.position = 'fixed';
+    hud.style.top = '0';
+    hud.style.left = '0';
+    hud.style.width = '100%';
+    hud.style.height = 'auto';
+    hud.style.background = 'rgba(200,180,80,0.97)';
+    hud.style.color = '#222';
+    hud.style.fontSize = '18px';
+    hud.style.zIndex = '10001';
+    hud.style.display = 'flex';
+    hud.style.flexDirection = 'column';
+    hud.style.alignItems = 'center';
+    hud.style.justifyContent = 'center';
+    hud.style.fontWeight = 'bold';
+    hud.style.borderBottom = '2px solid #444';
+    hud.style.boxShadow = '0 2px 8px #0004';
+    hud.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;width:100%;height:48px;">
+        <span id="hud-stats-values">${getHUDText(game)}</span>
+        <button id="controls-toggle" style="background:#222;color:#fff;border:none;padding:4px 12px;margin-left:24px;border-radius:6px;cursor:pointer;">Controls</button>
+        <button id="objective-toggle" style="background:#222;color:#fff;border:none;padding:4px 12px;margin-left:12px;border-radius:6px;cursor:pointer;">Objective</button>
+      </div>
+      <div id="controls-details" style="display:none;padding:8px 24px 16px 24px;width:100%;background:rgba(30,30,60,0.97);color:#fff;">
+        <ul style="margin:0;padding-left:18px;">
+          <li><b>Left Click</b>: Select units/buildings, set move/harvest target</li>
+          <li><b>B</b>: Build Barracks at mouse location</li>
+          <li><b>T</b>: Train Trooper (if Barracks exists)</li>
+          <li><b>Middle Mouse</b>: Pan camera</li>
+          <li><b>Mouse Wheel</b>: Zoom camera</li>
+        </ul>
+      </div>
+      <div id="objective-details" style="display:none;padding:8px 32px;width:100%;background:rgba(40,40,80,0.95);color:#fff;font-size:22px;text-align:center;">
+        <span id="objective-text">${getObjectiveText(window.currentLevel || 1)}</span>
+      </div>
+    `;
+    document.body.appendChild(hud);
+    document.getElementById('controls-toggle').onclick = () => {
+      const details = document.getElementById('controls-details');
+      details.style.display = details.style.display === 'none' ? 'block' : 'none';
+    };
+    document.getElementById('objective-toggle').onclick = () => {
+      const details = document.getElementById('objective-details');
+      details.style.display = details.style.display === 'none' ? 'block' : 'none';
+    };
+  } else {
+    // Only update stats values, not the whole HUD
+    const statsSpan = document.getElementById('hud-stats-values');
+    if (statsSpan) {
+      statsSpan.innerHTML = getHUDText(game);
+    }
+    // Do not touch controls-details or objective-details so their state is preserved
+  }
+}
+// --- End HUD Header ---
 
 // --- Camera Panning & Zoom Input Stub ---
 canvas.addEventListener('wheel', (e) => {
@@ -423,13 +613,27 @@ function gameLoop() {
 
   update(dt);
   draw();
-  updateHUD(game); // <-- Ensure HUD is updated every frame
+  showHUD(game); // <-- Ensure HUD is rendered every frame
+  updateHUD(game); // <-- Keep legacy HUD update for compatibility
   checkWinLose();
 
   requestAnimationFrame(gameLoop);
 }
 
 window.onload = () => {
+  showHUD(game); // HUD now includes controls/objective
+  loadLevel(1);
   logMessage("Game started. Select your harvester and click on spice to harvest.");
   gameLoop();
 };
+
+// --- Enemy Troop Visuals & Combat ---
+function isEnemyUnit(u) {
+  return u.isEnemy === true;
+}
+function getPlayerUnits() {
+  return game.units.filter(u => !isEnemyUnit(u));
+}
+function getEnemyUnits() {
+  return game.units.filter(u => isEnemyUnit(u));
+}
