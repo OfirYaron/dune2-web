@@ -29,7 +29,7 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 
 ## Phase 2: Core Game Improvements
 
-6. **Improve Graphics and Animations**
+6. **Improve Graphics and Animations** [Issue](https://github.com/OfirYaron/dune2-web/issues/14)
    - Redraw units and buildings with more detail (pixel art or SVG).
    - Add basic animations for movement, harvesting, combat, explosions.
    - Implement smooth camera panning and zoom.

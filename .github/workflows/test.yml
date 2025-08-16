@@ -34,7 +34,7 @@ jobs:
       - name: Serve and test (static)
         run: |
           npx playwright install chromium
-          npx http-server . &
+          npx http-server . -p 8080 &
           sleep 2
           node tests/playwright-mocha-check.js
         env:

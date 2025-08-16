@@ -2,8 +2,6 @@ import { game, createBuilding, createUnit } from './gameState.js';
 import { UnitTypes } from './entities.js';
 import { logMessage } from './ui.js';
 
-// Level 2: harder, more spice, enemies, and multiple spice patches
-
 function createEnemyUnit(type, x, y) {
   const unitDef = UnitTypes[type.toUpperCase()];
   return {
@@ -23,6 +21,7 @@ function createEnemyUnit(type, x, y) {
     carried: 0,
     capacity: unitDef.capacity,
     state: "patrol",
+    isEnemy: true,
     patrolPoints: [
       { x: x - 60, y: y - 40 },
       { x: x + 60, y: y + 40 },
@@ -49,7 +48,7 @@ function loadLevel2() {
   // Player base
   game.buildings.push(createBuilding("base", 100, 300));
 
-  // Player harvester
+  // Player harvester only
   game.units.push(createUnit("harvester", 130, 320));
 
   // Player barracks
@@ -67,7 +66,7 @@ function loadLevel2() {
   game.buildings.push(createBuilding("enemy_barracks", 740, 250));
 
   // Enemy troops patrolling near enemy base
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 2; i++) {
     const enemy = createEnemyUnit("trooper", 700 + i * 30, 230 + i * 15);
     game.units.push(enemy);
   }

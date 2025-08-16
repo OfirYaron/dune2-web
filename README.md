@@ -13,6 +13,7 @@ See latest deployed game here: https://ofiryaron.com/dune2-web/
 - **Train troops**: Create troopers to defend and attack.
 - **Levels**: Includes at least two levels with increasing difficulty and enemy AI.
 - **HUD and Log**: Real-time display of resources, units, and game events.
+- **Improved Graphics and Animations**: Foundation for pixel art/SVG assets, animation states, and camera panning/zoom added. See roadmap and engine.js for details.
 
 ## File Structure
 
@@ -91,7 +92,7 @@ This project uses **Mocha** and **Chai** (via CDN) for unit and integration test
 - Create new test files in the `tests/` directory.
 - Use Mocha's `describe` and `it` blocks for organizing tests.
 - Use Chai's `assert`/`expect` for assertions.
-- Cover all game mechanics, UI logic, and edge cases.
+- Cover all game mechanics, UI logic, edge cases, and new features (e.g., animation, camera).
 
 ### Example Test
 ```js

@@ -6,7 +6,7 @@ export const UnitTypes = {
     size: 20,
     color: "#FFD700",
     label: "H",
-    hp: 100,
+    hp: 140, // Increased from 100 to 140
     attackPower: 0,
     attackRange: 0,
     cost: 0,
@@ -18,8 +18,8 @@ export const UnitTypes = {
     size: 16,
     color: "#88CCFF",
     label: "T",
-    hp: 60,
-    attackPower: 18,
+    hp: 90, // Increased from 60 to 90
+    attackPower: 15, // Lowered from 18 to 15
     attackRange: 26,
     cost: 50,
   },
