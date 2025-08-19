@@ -438,6 +438,21 @@ function draw() {
       game.selectedUnit.size + 6
     );
   }
+
+  // Draw hover outline for unit or building
+  if (game.hoveredUnit) {
+    const u = game.hoveredUnit;
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(u.x, u.y, u.size / 2 + 4, u.size / 2 + 4, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  } else if (game.hoveredBuilding) {
+    const b = game.hoveredBuilding;
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(b.x - b.size/2 - 4, b.y - b.size/2 - 4, b.size + 8, b.size + 8);
+  }
   ctx.restore();
 }
 
@@ -520,6 +535,15 @@ function loadLevel(levelNum) {
     });
   }
 }
+
+// Expose a global helper so input or other modules can request level changes
+window.jumpToLevel = function(levelNum) {
+  try {
+    loadLevel(levelNum);
+  } catch (e) {
+    console.warn('jumpToLevel failed', e);
+  }
+};
 
 // --- HUD Helper Functions ---
 function getHUDText(game) {

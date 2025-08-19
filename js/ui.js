@@ -25,6 +25,11 @@ export function logMessage(msg) {
 export const tooltip = {
   el: null,
   init() {
+    // guard: if tooltip element doesn't exist (or duplicates exist), keep only one
+    const existing = document.querySelectorAll('#tooltip');
+    if (existing.length > 1) {
+      existing.forEach((n, i) => { if (i > 0) n.remove(); });
+    }
     this.el = document.getElementById('tooltip');
   },
   show(html, x, y) {
@@ -46,4 +51,12 @@ export const tooltip = {
     this.el.setAttribute('aria-hidden', 'true');
   }
 };
+
+// Dedupe HUD and tooltip on DOM ready to avoid editor previews or duplicate injections
+document.addEventListener('DOMContentLoaded', () => {
+  const huds = document.querySelectorAll('#hud');
+  if (huds.length > 1) huds.forEach((n, i) => { if (i > 0) n.remove(); });
+  const tips = document.querySelectorAll('#tooltip');
+  if (tips.length > 1) tips.forEach((n, i) => { if (i > 0) n.remove(); });
+});
 

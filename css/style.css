@@ -15,6 +15,15 @@ body {
   font-size: 16px;
 }
 
+/* Make HUD fixed and on top to avoid visual overlap with other previews */
+#hud {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 2147483000; /* very high to stay above overlays */
+}
+
 #hud div { display: flex; align-items: center; gap:8px; }
 #hud img, #hud svg { width:18px; height:18px }
 
@@ -27,12 +36,24 @@ body {
   will-change: transform, opacity;
 }
 
+/* tooltip should be above the HUD */
+#tooltip { z-index: 2147483001; }
+
 .selection-ring {
   stroke: #fff;
   stroke-width: 3;
   fill: none;
   stroke-dasharray: 4 3;
 }
+
+/* Hover outline */
+.hover-outline {
+  stroke: rgba(255,255,255,0.9);
+  stroke-width: 2;
+  fill: none;
+}
+
+#context-menu div:hover { background:#333 }
 
 canvas {
   display: block;

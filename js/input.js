@@ -10,8 +10,33 @@ export function setupInput(canvas, game, logMessage, attemptBuildBarracks, attem
     return { x: game.mouse.x, y: game.mouse.y };
   }
   canvas.addEventListener("mousemove", (e) => updateMouseFromEvent(e));
+  // Hover detection (unit/building under cursor)
+  canvas.addEventListener('mousemove', (e) => {
+    const m = updateMouseFromEvent(e);
+    const prevUnit = game.hoveredUnit;
+    const prevBuilding = game.hoveredBuilding;
+    const unit = game.units.find(u => Math.hypot(u.x - m.x, u.y - m.y) < u.size / 2);
+    game.hoveredUnit = unit || null;
+    const building = game.buildings.find(b => Math.abs(b.x - m.x) < b.size / 2 && Math.abs(b.y - m.y) < b.size / 2);
+    game.hoveredBuilding = building || null;
+  });
 
-  canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+  canvas.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    const m = updateMouseFromEvent(e);
+    const building = game.buildings.find(b => Math.abs(b.x - m.x) < b.size / 2 && Math.abs(b.y - m.y) < b.size / 2);
+    const menu = document.getElementById('context-menu');
+    if (building && building.type === 'barracks') {
+      menu.style.left = (e.clientX + 2) + 'px';
+      menu.style.top = (e.clientY + 2) + 'px';
+      menu.style.display = 'block';
+      // attach action
+      const train = document.getElementById('cm-build-trooper');
+      train.onclick = () => { attemptTrainTrooper(); menu.style.display='none'; };
+      return;
+    }
+    if (menu) menu.style.display = 'none';
+  });
 
   // Box select state
   let boxStart = null;
@@ -118,6 +143,29 @@ export function setupInput(canvas, game, logMessage, attemptBuildBarracks, attem
         game.camera.x = base.x - 400;
         game.camera.y = base.y - 300;
       }
+    }
+    // Level picker: Q
+    if (k === 'q') {
+      // prompt for level number (simple prompt UI)
+      const val = prompt('Jump to level number: (1,2,...)');
+      const n = parseInt(val, 10);
+      if (!isNaN(n) && window.jumpToLevel) {
+        window.jumpToLevel(n);
+      }
+    }
+    // Close context menu on Escape
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      const menu = document.getElementById('context-menu');
+      if (menu) menu.style.display = 'none';
+    }
+  });
+
+  // Close context menu when clicking anywhere outside it
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('context-menu');
+    if (!menu) return;
+    if (!e.target.closest || !menu.contains(e.target)) {
+      menu.style.display = 'none';
     }
   });
 }
