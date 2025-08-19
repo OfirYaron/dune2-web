@@ -15,6 +15,25 @@ body {
   font-size: 16px;
 }
 
+#hud div { display: flex; align-items: center; gap:8px; }
+#hud img, #hud svg { width:18px; height:18px }
+
+.colorblind-mode body { background: #111; }
+.colorblind-mode #hud { background: #333; }
+.colorblind-mode canvas { background: #d9d6b8; }
+
+#tooltip {
+  transition: transform 0.06s ease-out, opacity 0.06s;
+  will-change: transform, opacity;
+}
+
+.selection-ring {
+  stroke: #fff;
+  stroke-width: 3;
+  fill: none;
+  stroke-dasharray: 4 3;
+}
+
 canvas {
   display: block;
   margin: 12px auto;

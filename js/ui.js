@@ -21,3 +21,29 @@ export function logMessage(msg) {
   }
 }
 
+// Tooltip helper (lightweight, non-blocking)
+export const tooltip = {
+  el: null,
+  init() {
+    this.el = document.getElementById('tooltip');
+  },
+  show(html, x, y) {
+    if (!this.el) this.init();
+    this.el.innerHTML = html;
+    this.el.style.display = 'block';
+    this.el.style.left = `${x + 12}px`;
+    this.el.style.top = `${y + 12}px`;
+    this.el.setAttribute('aria-hidden', 'false');
+  },
+  move(x, y) {
+    if (!this.el) return;
+    this.el.style.left = `${x + 12}px`;
+    this.el.style.top = `${y + 12}px`;
+  },
+  hide() {
+    if (!this.el) this.init();
+    this.el.style.display = 'none';
+    this.el.setAttribute('aria-hidden', 'true');
+  }
+};
+

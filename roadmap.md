@@ -33,10 +33,10 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
    - Redraw units and buildings with more detail (pixel art or SVG).
    - Add basic animations for movement, harvesting, combat, explosions.
    - Implement smooth camera panning and zoom.
-7. **Enhance UI/UX**
-   - Add tooltips, selection highlights, and context menus.
-   - Improve HUD with icons and progress bars.
-   - Add sound effects and background music (vanilla JS Audio API).
+7. **Enhance UI/UX** [Issue](https://github.com/OfirYaron/dune2-web/issues/17)
+    - Add tooltips, selection highlights, and context menus.
+    - Improve HUD with icons and progress bars.
+    - Add sound effects and background music (vanilla JS Audio API).
 8. **Settings Menu**
    - Allow toggling sound, graphics quality, and controls.
    - Add save/load game functionality (localStorage).

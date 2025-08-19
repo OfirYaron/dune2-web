@@ -105,6 +105,9 @@ describe('Sample Test', function() {
 });
 ```
 
+### Single prompt 'pick up next task':
+you are a skilled developer and a gifted game product engineer, please follow the prompts in this file one by one and execute them in that order, you do not need my help, or permission - please do not bother me with question as much as you can and operate to the best of your understanding and knowledge
+
 ### Continuous Integration (CI)
 - All tests are run automatically on every push and pull request using GitHub Actions.
 - CI uses a headless browser to run tests and will fail builds on test errors.
@@ -114,3 +117,10 @@ describe('Sample Test', function() {
 - Add integration tests for interactions between modules.
 - Document any new test files and their purpose in the README.
 - Ensure tests pass locally before pushing changes.
+
+## Shortcuts
+
+- B — Build barracks at mouse location
+- T — Train a trooper (if barracks and resources available)
+- Space — Center camera on your base
+

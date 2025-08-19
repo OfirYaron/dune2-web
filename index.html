@@ -8,12 +8,14 @@
 </head>
 <body>
   <div id="hud">
-    <div><b>Spice:</b> <span id="spice">0</span></div>
-    <div><b>Carried:</b> <span id="carried">0</span></div>
-    <div><b>Barracks:</b> <span id="bcount">0</span></div>
-    <div><b>Troops:</b> <span id="ucount">0</span></div>
+    <div id="hud-spice" aria-label="spice">🍂 <b>Spice:</b> <span id="spice">0</span></div>
+    <div id="hud-carried" aria-label="carried">🛢️ <b>Carried:</b> <span id="carried">0</span></div>
+    <div id="hud-bcount" aria-label="barracks-count">🏠 <b>Barracks:</b> <span id="bcount">0</span></div>
+    <div id="hud-ucount" aria-label="unit-count">👥 <b>Troops:</b> <span id="ucount">0</span></div>
+    <div id="hud-controls" style="margin-left:8px">Shortcuts: B build · T train · Space center</div>
   </div>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="tooltip" role="tooltip" aria-hidden="true" style="display:none;position:fixed;pointer-events:none;padding:6px 8px;background:rgba(0,0,0,0.8);color:#fff;border-radius:4px;font-size:13px;z-index:9999;">tooltip</div>
   <div id="log"></div>
 
   <script type="module" src="js/engine.js"></script>
