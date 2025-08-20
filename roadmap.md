@@ -37,10 +37,16 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
     - Add tooltips, selection highlights, and context menus.
     - Improve HUD with icons and progress bars.
     - Add sound effects and background music (vanilla JS Audio API).
-8. **Settings Menu**
+8. **Enhance Building Health System**
+    - buildings need to show their HP
+    - building HP needs to be reduced when attacked
+    - Add new unit: Grenadier (created in the barracks)
+    - Add new unit: Engineer (created in the barracks)
+    - Engineer can repair buildings and explode enemies buildings.
+9. **Settings Menu**
    - Allow toggling sound, graphics quality, and controls.
    - Add save/load game functionality (localStorage).
-9. **Accessibility Improvements**
+10. **Accessibility Improvements**
    - Keyboard navigation and shortcuts.
    - Colorblind-friendly palette options.
 
@@ -48,20 +54,20 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 
 ## Phase 3: Feature Expansion
 
-10. **Expand Troop and Building Types**
+11. **Expand Troop and Building Types**
     - Implement all original Dune 2 units: infantry, tanks, trikes, siege tanks, rocket launchers, etc.
     - Add all building types: refinery, factory, radar, turrets, etc.
     - Implement unique stats, costs, and abilities for each.
-11. **Army and Squad Management**
+12. **Army and Squad Management**
     - Enable multi-unit selection and group commands.
     - Add formation and patrol commands.
-12. **Enemy AI Improvements**
+13. **Enemy AI Improvements**
     - Smarter pathfinding and attack logic.
     - Multiple enemy factions with different strategies.
-13. **Resource and Economy System**
+14. **Resource and Economy System**
     - Add power, credits, and advanced spice mechanics.
     - Implement building upgrades and tech tree.
-14. **Map Editor**
+15. **Map Editor**
     - In-browser map editor for custom levels.
     - Save/load/share maps via localStorage or downloadable JSON files.
 
@@ -69,13 +75,13 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 
 ## Phase 4: Content Expansion
 
-15. **Campaign and Story Mode**
+16. **Campaign and Story Mode**
     - Add multiple missions with increasing difficulty.
     - Implement mission objectives, cutscenes, and story progression.
-16. **Additional Levels and Factions**
+17. **Additional Levels and Factions**
     - Add all original Dune 2 houses (Atreides, Harkonnen, Ordos).
     - Unique units, buildings, and abilities per faction.
-17. **Advanced Enemy AI and Boss Battles**
+18. **Advanced Enemy AI and Boss Battles**
     - Special enemy units and scripted events.
     - End-level bosses and unique challenges.
 
@@ -83,18 +89,25 @@ This roadmap outlines a comprehensive, step-by-step plan to transform Dune 2 Lit
 
 ## Phase 5: Polish and Community
 
-18. **Performance Optimization**
+19. **Performance Optimization**
     - Profile and optimize rendering and game logic.
     - Support for mobile browsers and touch controls.
-19. **Documentation and Tutorials**
+20. **Documentation and Tutorials**
     - Write comprehensive user and developer documentation.
     - Add in-game tutorial and help screens.
-20. **Community Features**
+21. **Community Features**
     - Add high score leaderboard (localStorage or downloadable file).
     - Enable sharing replays and custom maps via downloadable/uploadable files.
     - Set up GitHub Discussions for feedback and ideas.
 
 ---
+
+## Phase 6: Post-Launch Support/Bugs
+
+- when hovering on a unit/building, please show a designed tooltip showing it's stats (unit type, hp, etc)
+- it should be possible to multi-select units, using mouse drag
+- please plan and design a 3rd level, make sure it's engaging and introduces new troop types, grenadiers
+- Monitor game performance and fix any emerging issues.
 
 ## Ongoing: Maintenance and Feedback
 

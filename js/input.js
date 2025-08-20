@@ -13,8 +13,7 @@ export function setupInput(canvas, game, logMessage, attemptBuildBarracks, attem
   // Hover detection (unit/building under cursor)
   canvas.addEventListener('mousemove', (e) => {
     const m = updateMouseFromEvent(e);
-    const prevUnit = game.hoveredUnit;
-    const prevBuilding = game.hoveredBuilding;
+    
     const unit = game.units.find(u => Math.hypot(u.x - m.x, u.y - m.y) < u.size / 2);
     game.hoveredUnit = unit || null;
     const building = game.buildings.find(b => Math.abs(b.x - m.x) < b.size / 2 && Math.abs(b.y - m.y) < b.size / 2);
