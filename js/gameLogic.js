@@ -1,7 +1,7 @@
 
 import { game, createUnit, createBuilding } from './gameState.js';
 import { UnitTypes, BuildingTypes, isEnemyUnit } from './entities.js';
-import { updateHUD, logMessage } from './ui.js';
+import { logMessage } from './ui.js';
 
 export function attemptBuildBarracks(x, y) {
     if (game.spice < BuildingTypes.BARRACKS.cost) {
