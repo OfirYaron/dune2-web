@@ -21,3 +21,42 @@ export function logMessage(msg) {
   }
 }
 
+// Tooltip helper (lightweight, non-blocking)
+export const tooltip = {
+  el: null,
+  init() {
+    // guard: if tooltip element doesn't exist (or duplicates exist), keep only one
+    const existing = document.querySelectorAll('#tooltip');
+    if (existing.length > 1) {
+      existing.forEach((n, i) => { if (i > 0) n.remove(); });
+    }
+    this.el = document.getElementById('tooltip');
+  },
+  show(html, x, y) {
+    if (!this.el) this.init();
+    this.el.innerHTML = html;
+    this.el.style.display = 'block';
+    this.el.style.left = `${x + 12}px`;
+    this.el.style.top = `${y + 12}px`;
+    this.el.setAttribute('aria-hidden', 'false');
+  },
+  move(x, y) {
+    if (!this.el) return;
+    this.el.style.left = `${x + 12}px`;
+    this.el.style.top = `${y + 12}px`;
+  },
+  hide() {
+    if (!this.el) this.init();
+    this.el.style.display = 'none';
+    this.el.setAttribute('aria-hidden', 'true');
+  }
+};
+
+// Dedupe HUD and tooltip on DOM ready to avoid editor previews or duplicate injections
+document.addEventListener('DOMContentLoaded', () => {
+  const huds = document.querySelectorAll('#hud');
+  if (huds.length > 1) huds.forEach((n, i) => { if (i > 0) n.remove(); });
+  const tips = document.querySelectorAll('#tooltip');
+  if (tips.length > 1) tips.forEach((n, i) => { if (i > 0) n.remove(); });
+});
+

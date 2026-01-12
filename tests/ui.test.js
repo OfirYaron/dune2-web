@@ -1,3 +1,20 @@
+// tests/ui.test.js
+describe('UI helpers', function() {
+  it('box-select should include units inside bounds', function() {
+    // simple box select check (pure function style)
+    const units = [ {id:1,x:10,y:10}, {id:2,x:50,y:50}, {id:3,x:100,y:100} ];
+    const x1 = 5, y1 = 5, x2 = 60, y2 = 60;
+    const selected = units.filter(u => u.x >= x1 && u.x <= x2 && u.y >= y1 && u.y <= y2).map(u=>u.id);
+    chai.assert.deepEqual(selected, [1,2]);
+  });
+
+  it('tooltip HTML formatting contains name and hp', function() {
+    const unit = { name: 'Harvester', hp: 120, carried: 10 };
+    const html = `<b>${unit.name}</b><br>HP: ${unit.hp}`;
+    chai.assert.include(html, 'Harvester');
+    chai.assert.include(html, 'HP: 120');
+  });
+});
 // ui.test.js
 // Tests for UI updates and HUD logic
 

@@ -12,6 +12,8 @@ export const game = {
   spicePatches: [],
   selectedUnit: null,
   selectedHarvester: null,
+  hoveredUnit: null,
+  hoveredBuilding: null,
   mouse: { x: 0, y: 0 },
   nextId: 1,
   gameOver: false,
