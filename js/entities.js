@@ -54,3 +54,6 @@ export const BuildingTypes = {
   },
 };
 
+export function isEnemyUnit(u) {
+    return u.isEnemy === true;
+}
